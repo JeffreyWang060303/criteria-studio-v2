@@ -1,0 +1,25 @@
+Verification record
+
+11 JavaScript workflow and generated-application tests passed locally and in
+GitHub Actions. These cover explicit selection, approval and overrides,
+decision-based readiness, brief snapshot preservation, stale output rejection,
+reselection after edits, conversation updates, unresolved requests, HTML script
+syntax and escaping, volunteer booking/capacity/overlap/cancellation, lending
+validation/loans/returns, and planner input validation/completion/deletion.
+
+5 Python adapter checks passed: missing API key handling, readiness response
+validation, complete generated HTML validation, clarification response shapes,
+and independent agent-role instructions.
+
+Chrome inspection confirmed the two-pane interface, conversation updates,
+criterion selection, and resulting readiness updates. Further automated browser
+interaction was limited by browser-control errors and user window changes.
+Actual AI-provider calls were not tested because no server API key is configured.
+
+Public publication succeeded on GitHub Pages. Unauthenticated HTTP retrieval
+returned 200, and deployed app.js and engine.js matched the local tested source.
+No original prototype files or existing website repositories were changed.
+
+The public site is a guided demo. GitHub Pages does not execute the Python
+backend. Arbitrary app generation requires live AI and a protected backend;
+custom ideas are blocked from template generation to avoid unrelated output.
