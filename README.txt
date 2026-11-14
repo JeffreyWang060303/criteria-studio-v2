@@ -37,11 +37,11 @@ map, preparation checklist, proposed relative course timeline, 6–8 participant
 target, participant/internal-case log, protocol download, and fallback plan.
 There are no fabricated participant sessions or effectiveness results.
 
-Publication: Sites publishing was unavailable in the connected workspace.
-This is a local website, not a new publicly hosted URL. Static demo files in
-public/ can be hosted on a static host. Live mode requires a protected Python
-backend, HTTPS, authentication, rate limits, and appropriate persistent storage
-before making it a shared service. The local server deliberately rejects
+Public demo: https://jeffreywang060303.github.io/criteria-studio-v2/
+Published as a new GitHub Pages site; the original site is unchanged.
+GitHub Pages runs the complete guided demo and evaluation interface without
+sign-in. Live AI requires a protected Python backend, HTTPS, authentication,
+rate limits, and appropriate persistent storage before shared deployment. The local server deliberately rejects
 non-local hosts; do not use it as an unauthenticated public API proxy.
 
 Tests:
