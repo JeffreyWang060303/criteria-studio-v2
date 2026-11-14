@@ -1,0 +1,1 @@
+{"name":"criteria-studio-v2","private":true,"type":"module","scripts":{"test":"node tests/engine.test.mjs"}}

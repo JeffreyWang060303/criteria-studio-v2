@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {newProject,readyReview,answerQuestion,selected,approve,addOutput,demoOutput,touch,demoChat,snapshot,sandboxHTML} from '../public/engine.js';
+let count=0;
+function test(name,fn){fn();console.log('PASS '+name);count++;}
+test('Nothing is selected or generated automatically',()=>{const p=newProject();assert.equal(selected(p).length,0);assert.equal(p.outputs.length,0);assert.equal(readyReview(p).ready,false);assert.throws(()=>approve(p,true));});
+test('Readiness depends on decisions, not turn count',()=>{const p=newProject();p.criteria[0].selected=true;p.messages.push(...Array(40).fill({role:'user',text:'hi'}));assert.equal(readyReview(p).ready,false);p.questions.forEach(q=>answerQuestion(p,q.id,q.options[0]));assert.equal(readyReview(p).ready,true);assert.equal(selected(p).length,1);});
+test('An explicit override is required for open decisions',()=>{const p=newProject();p.criteria[0].selected=true;assert.throws(()=>approve(p));assert.equal(approve(p,true).override,true);});
+test('Output brief remains immutable after revisions',()=>{const p=newProject();p.criteria[0].selected=true;const a=approve(p,true);const o=addOutput(p,a,demoOutput(a.brief),'demo');p.criteria[0].text='Changed';p.outcome='A different outcome';touch(p,'changed');assert.equal(p.approval,null);assert.notEqual(o.brief.criteria[0].text,p.criteria[0].text);assert.throws(()=>addOutput(p,a,'<html></html>','demo'));});
+test('Answer changes require reselection',()=>{const p=newProject(),q=p.questions[0];answerQuestion(p,q.id,q.options[0]);p.criteria.at(-1).selected=true;answerQuestion(p,q.id,q.options[1]);assert.equal(p.criteria.at(-1).selected,false);assert.equal(p.criteria.length,3);assert.match(p.criteria.at(-1).check,/5 spaces/);});
+test('Chat decisions update brief without silently selecting checks',()=>{const p=newProject();demoChat(p,'Capacity: 3 volunteers per shift. Prevent overlapping bookings. Allow cancellation.');assert.equal(p.questions.filter(q=>!q.answer).length,0);assert.equal(p.criteria.length,5);assert.equal(selected(p).length,0);});
+test('Unknown requests remain visible as unresolved decisions',()=>{const p=newProject();demoChat(p,'Make signup available in Spanish');assert.match(p.questions.at(-1).text,/Spanish/);assert.equal(p.questions.at(-1).answer,'');});
+test('Generated scripts parse for every scenario and escape HTML input',()=>{for(const type of ['volunteer','planner','lending']){const p=newProject(type);p.title='</script><script>alert(1)</script>';const html=demoOutput(snapshot(p));const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,1);new vm.Script(scripts[0][1]);assert.match(html,/\\u003c/);assert.match(sandboxHTML(html),/connect-src 'none'/);}});
+console.log(`${count} workflow tests passed.`);
